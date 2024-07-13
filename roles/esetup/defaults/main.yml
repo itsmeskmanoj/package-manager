@@ -1,0 +1,24 @@
+---
+# defaults file for esetup
+
+janastu_servu: "janastu"
+janastu_servu_home: "/datadrive"
+
+# TODO: To be proposed in future to move from 'datadrive' to this:
+# janastu_servu_home: "/{{ janastu_servu_name }}"
+janastu_servu_passwd: ""
+
+supervisor_ctrl_group_name: 'supervisor'
+
+directory_init_list:
+  - apps
+  - venvs
+  - configs
+  - logs
+  - backing-services
+  - data
+  - bin
+  - tmp
+
+min_fds: 65536
+min_procs: 32768

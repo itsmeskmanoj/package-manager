@@ -1,0 +1,15 @@
+---
+# Task file to seed and setup the initial set of users
+
+- name: Add the Ansible user.
+  user:
+    name: ansible
+    groups: eadmin
+    shell: /sbin/nologin
+
+- name: Add a common user for the DevOps team.
+  user:
+    name: janastuops
+    groups: eadmin
+    shell: /bin/bash
+    password: "{{ janastu_devops_passwd }}"

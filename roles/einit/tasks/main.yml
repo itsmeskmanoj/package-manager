@@ -1,0 +1,68 @@
+---
+# tasks file for einit
+
+- name: Install essential system libraries.
+  apt:
+    update_cache: yes
+    name: "{{ essential_sys_libs }}"
+
+- name: Install essential system packages and utilities.
+  apt:
+    update_cache: yes
+    name: "{{ essential_sys_utils }}"
+
+- name: Upgrade pip to the latest availble version.
+  pip:
+    name: pip
+    state: latest
+
+#############
+# DEPRECATED:
+    # - name: Install essential python packages and utilities.
+    #   pip:
+    #     name: "{{ item }}"
+    #   loop: "{{ essential_py2x_packages }}"
+#############
+
+- name: Configure global bash settings.
+  copy:
+    src: bashrc.skel
+    dest: /etc/skel/.bashrc
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Seed the first user for the ops team
+  user:
+    name: "{{ seed_ops_user.name }}"
+    groups: sudo
+    shell: /bin/bash
+    password: "{{ seed_ops_user.passwd }}"
+
+- name: Add the banner to be presented for remote ssh login.
+  copy:
+    src: sshd-banner
+    dest: /etc/issue.net
+
+- name: Configure SSH server setup.
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart sshd
+
+- name: Enable SSH login for the seeded ops user.
+  authorized_key:
+    user: "{{ seed_ops_user.name }}"
+    key: "{{ seed_ops_user.key }}"
+
+- name: Editing visudo file
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '{{ seed_ops_user.name }} ALL='
+    line: '{{ seed_ops_user.name }} ALL=(ALL) NOPASSWD:ALL'
+    validate: '/usr/sbin/visudo -cf %s'

@@ -1,0 +1,60 @@
+---
+# tasks file for esetup
+
+- name: Add the default and common user for running services.
+  user:
+    name: "{{ janastu_servu }}"
+    password: "{{ janastu_servu_passwd }}"
+    home: "{{ janastu_servu_home }}"
+    shell: /bin/bash
+
+- name: Setup the standard internal directory layout.
+  file:
+    path: "{{ janastu_servu_home }}/{{ item }}"
+    state: directory
+    owner: "{{ janastu_servu }}"
+    group: "{{ janastu_servu }}"
+    mode: "0755"
+  loop: "{{ directory_init_list }}"
+
+- name: Install supervisor if not already installed.
+  apt:
+    update_cache: yes
+    name: supervisor
+
+- name: Add the configuration directory for supervisor.
+  file:
+    path: "{{ janastu_servu_home }}/configs/supervisor"
+    state: directory
+    owner: "{{ janastu_servu }}"
+    group: "{{ janastu_servu }}"
+
+- name: Update the supervisor configuration.
+  template:
+    src: supervisord.conf.j2
+    dest: /etc/supervisor/supervisord.conf
+    owner: "{{ janastu_servu }}"
+    group: "{{ janastu_servu }}"
+
+- name: Restart supervisor daemon with the deployed configuration.
+  service:
+    name: supervisor
+    state: restarted
+
+- name: Add the directory where supervisor stores its logs.
+  file:
+    path: "{{ janastu_servu_home }}/logs/supervisor"
+    state: directory
+    owner: "{{ janastu_servu }}"
+    group: "{{ janastu_servu }}"
+
+- name: Add the supervisor group to enable a socket-group-ownership model like docker.
+  group:
+    name: "{{ supervisor_ctrl_group_name }}"
+    state: present
+
+- name: Add the service user to the supervisor group to be able to control processes under it.
+  user:
+    name: "{{ janastu_servu }}"
+    groups: "{{ supervisor_ctrl_group_name }}"
+    append: yes

@@ -1,0 +1,7 @@
+---
+# handlers file for einit
+
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted

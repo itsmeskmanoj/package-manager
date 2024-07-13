@@ -1,0 +1,62 @@
+---
+# defaults file for einit
+
+essential_sys_libs:
+  - language-pack-en
+  - build-essential
+  - software-properties-common
+  - apt-transport-https
+  - ca-certificates
+  - gnupg-agent
+  - libssl-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - libncurses5-dev
+  - libncursesw5-dev
+  - xz-utils
+  - tk-dev
+  - libffi-dev
+  - liblzma-dev
+  - python3-openssl
+  - sl
+
+essential_sys_utils:
+  - python3-pip
+  - python3-pip-whl
+  - python3-dev
+  - virtualenv
+  - tar
+  - zip
+  - unzip
+  - git
+  - supervisor
+  - jq
+  - htop
+  - vim
+  - wget
+  - curl
+  - llvm
+  - python2
+  - libxml2-dev
+  - libxslt-dev
+  - arch-install-scripts
+
+janastu_user_groups:
+  - eservice
+  - eadmin
+  - edev
+  - janastu
+
+
+seed_ops_user:
+  name: "janastuops"
+  passwd: "{{ janastuops_passwd }}"
+  key: "{{ lookup('file', 'ssh_keys/janastuops.pub') }}"
+
+# NOTE
+# This password is expected to be supplied through the variable 'janastuops_passwd' 
+# at runtime preferably via a config file.
+#
+# This is also to be notified in the role README file.

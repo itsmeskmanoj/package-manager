@@ -1,0 +1,25 @@
+---
+# defaults file for docker
+
+legacy_releases:
+  - docker
+  - docker-engine
+  - docker.io
+
+sys_dependencies:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+
+key_url: "https://download.docker.com/linux/ubuntu/gpg"
+
+os_distro_release_codename: "{{ ansible_lsb['codename'] }}"
+sources_list_entry: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ os_distro_release_codename }} stable"
+
+apt_package_name: docker-ce
+
+# it is assumed that the 'einit' role has been applied and simply expects the parent directory to exist on the target.
+janastu_servu: janastu
+janastu_servu_data_dir: "/datadrive/data"
+docker_data_dir: "/datadrive/data/docker"

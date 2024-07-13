@@ -1,0 +1,18 @@
+---
+# Playbook to provision a newly procured machine.
+
+- name: Initial provisionioning of a newly deployed machine.
+  become: yes
+  hosts: all
+  tasks:
+    - name: Implement the einit role.
+      import_role:
+        name: einit
+
+    - name: Implement the esetup role.
+      import_role:
+        name: esetup
+
+    - name: Install and configure docker service.
+      import_role:
+        name: docker
